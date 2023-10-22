@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const product = require('./product');
+const order = require('./order');
+
 const Schema = mongoose.Schema
 const userSchema = new Schema({
     name: {
@@ -43,10 +45,20 @@ userSchema.methods.addToCart = function (product) {
 }
 userSchema.methods.removeFromCart = function (productId) {
     const updatedCartItems = this.cart.items.filter(item => {
-      return item._id.toString() !== productId.toString();
+        return item._id.toString() !== productId.toString();
     });
-    this.cart.items=updatedCartItems
+    this.cart.items = updatedCartItems
     return this.save()
+}
+
+userSchema.methods.getOrders = function () {
+    const userId = this._id
+    return order.findById(userId).then(result=>{
+        console.log(result)
+    })
+    .catch(e=>{
+        console.log(`error fetching orders: ${e}`)
+    })
 }
 
 
